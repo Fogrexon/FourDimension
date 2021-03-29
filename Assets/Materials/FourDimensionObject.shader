@@ -3,9 +3,6 @@
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
-        _RotateXY("RotateXY", Range(0.0, 6.2831853)) = 0.0
-        _RotateYZ("RotateYZ", Range(0.0, 6.2831853)) = 0.0
-        _RotateXZ("RotateXZ", Range(0.0, 6.2831853)) = 0.0
     }
     SubShader
     {
@@ -53,43 +50,17 @@
 
             sampler2D _MainTex;
             float4 _MainTex_ST;
-            float _RotateXY;
-            float _RotateYZ;
-            float _RotateXZ;
-
-            float4x4 rotationMatrix()
-            {
-                float4x4 rotXY = float4x4(
-                    1.0, 0.0, 0.0, 0.0,
-                    0.0, 1.0, 0.0, 0.0,
-                    0.0, 0.0, cos(_RotateXY), sin(_RotateXY),
-                    0.0, 0.0, -sin(_RotateXY), cos(_RotateXY)
-                );
-                float4x4 rotYZ = float4x4(
-                    cos(_RotateYZ), 0.0, 0.0, sin(_RotateYZ),
-                    0.0, 1.0, 0.0, 0.0,
-                    0.0, 0.0, 1.0, 0.0,
-                    -sin(_RotateYZ), 0.0, 0.0, cos(_RotateYZ)
-                );
-                float4x4 rotXZ = float4x4(
-                    1.0, 0.0, 0.0, 0.0,
-                    0.0, cos(_RotateXZ), 0.0, sin(_RotateXZ),
-                    0.0, 0.0, 1.0, 0.0,
-                    0.0, -sin(_RotateXZ), 0.0, cos(_RotateXZ)
-                );
-                return mul(rotXZ, mul(rotYZ, rotXY));
-            }
+            uniform float4x4 _FourDMatrix;
 
             v2g vert (appdata v)
             {
                 v2g o;
                 o.vertex = mul(unity_ObjectToWorld, v.vertex);
-                float4x4 rot = rotationMatrix();
                 o.color = v.color;
-                o.pos0 = mul(rot, v.pos0);
-                o.pos1 = mul(rot, v.pos1);
-                o.pos2 = mul(rot, v.pos2);
-                o.pos3 = mul(rot, v.pos3);
+                o.pos0 = mul(_FourDMatrix, v.pos0);
+                o.pos1 = mul(_FourDMatrix, v.pos1);
+                o.pos2 = mul(_FourDMatrix, v.pos2);
+                o.pos3 = mul(_FourDMatrix, v.pos3);
                 return o;
             }
 
