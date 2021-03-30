@@ -5,7 +5,7 @@ using FourDimension.Core;
 
 namespace FourDimension.Primitives
 {
-  public class Cube : FourDimansionModel
+  public class Cube : FourDimensionModel
   {
     public override void MakePyramids()
     {

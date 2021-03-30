@@ -9,7 +9,7 @@ namespace FourDimension.Core
   {
     void Start()
     {
-      FourDimansionModel modelBuilder = GetComponent<FourDimansionModel>();
+      FourDimensionModel modelBuilder = GetComponent<FourDimensionModel>();
       GetComponent<MeshFilter>().mesh = modelBuilder.BuildMesh();
     }
   }

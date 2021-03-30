@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace FourDimension.Core
 {
-  public abstract class FourDimansionModel : MonoBehaviour
+  public abstract class FourDimensionModel : MonoBehaviour
   {
     protected List<Vector4> pyramids = new List<Vector4>();
     protected List<Color> colors = new List<Color>();

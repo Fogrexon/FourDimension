@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace FourDimension.Core
 {
-  public class FourDimansionTransform : MonoBehaviour
+  public class FourDimensionTransform : MonoBehaviour
   {
     public float positionW = 0f;
     public Vector3 rotateW = Vector3.zero;
@@ -20,13 +20,13 @@ namespace FourDimension.Core
       rotXY.SetColumn(1, new Vector4(0.0f, 1.0f, 0.0f, 0.0f));
       rotXY.SetColumn(2, new Vector4(0.0f, 0.0f, Mathf.Cos(rotateW.z), Mathf.Sin(rotateW.z)));
       rotXY.SetColumn(3, new Vector4(0.0f, 0.0f, -Mathf.Sin(rotateW.z), Mathf.Cos(rotateW.z)));
-      
+
       Matrix4x4 rotYZ = new Matrix4x4();
       rotYZ.SetColumn(0, new Vector4(Mathf.Cos(rotateW.x), 0.0f, 0.0f, Mathf.Sin(rotateW.x)));
       rotYZ.SetColumn(1, new Vector4(0.0f, 1.0f, 0.0f, 0.0f));
       rotYZ.SetColumn(2, new Vector4(0.0f, 0.0f, 1.0f, 0.0f));
       rotYZ.SetColumn(3, new Vector4(-Mathf.Sin(rotateW.x), 0.0f, 0.0f, Mathf.Cos(rotateW.x)));
-      
+
       Matrix4x4 rotXZ = new Matrix4x4();
       rotXZ.SetColumn(0, new Vector4(1.0f, 0.0f, 0.0f, 0.0f));
       rotXZ.SetColumn(1, new Vector4(0.0f, Mathf.Cos(rotateW.y), 0.0f, Mathf.Sin(rotateW.y)));
@@ -41,7 +41,7 @@ namespace FourDimension.Core
 
     void Start()
     {
-      material = GetComponent<Renderer>().sharedMaterial; 
+      material = GetComponent<Renderer>().material;
     }
 
     void Update()
