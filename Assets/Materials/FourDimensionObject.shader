@@ -51,16 +51,17 @@
             sampler2D _MainTex;
             float4 _MainTex_ST;
             uniform float4x4 _FourDMatrix;
+            uniform float _PositionW;
 
             v2g vert (appdata v)
             {
                 v2g o;
                 o.vertex = mul(unity_ObjectToWorld, v.vertex);
                 o.color = v.color;
-                o.pos0 = mul(_FourDMatrix, v.pos0);
-                o.pos1 = mul(_FourDMatrix, v.pos1);
-                o.pos2 = mul(_FourDMatrix, v.pos2);
-                o.pos3 = mul(_FourDMatrix, v.pos3);
+                o.pos0 = mul(_FourDMatrix, v.pos0) + float4(0.0, 0.0, 0.0, _PositionW);
+                o.pos1 = mul(_FourDMatrix, v.pos1) + float4(0.0, 0.0, 0.0, _PositionW);
+                o.pos2 = mul(_FourDMatrix, v.pos2) + float4(0.0, 0.0, 0.0, _PositionW);
+                o.pos3 = mul(_FourDMatrix, v.pos3) + float4(0.0, 0.0, 0.0, _PositionW);
                 return o;
             }
 
@@ -161,7 +162,7 @@
 
             fixed4 frag (g2f i) : COLOR
             {
-                fixed4 col = i.color * abs(dot(_WorldSpaceLightPos0.xyz, i.normal));
+                fixed4 col = i.color;// * abs(dot(_WorldSpaceLightPos0.xyz, i.normal));
                 return col;
             }
             ENDCG

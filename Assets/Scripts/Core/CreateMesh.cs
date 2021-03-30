@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace FourDimension.Core
 {
+  [ExecuteInEditMode]
   public class CreateMesh : MonoBehaviour
   {
     void Start()

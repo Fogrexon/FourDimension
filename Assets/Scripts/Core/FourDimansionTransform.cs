@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 namespace FourDimension.Core
 {
   public class FourDimansionTransform : MonoBehaviour
   {
     public float positionW = 0f;
-    public Vector3 rotateXYZ = Vector3.zero;
     public Vector3 rotateW = Vector3.zero;
     public float scaleW = 1f;
 
@@ -18,7 +18,7 @@ namespace FourDimension.Core
       Matrix4x4 rotXY = new Matrix4x4();
       rotXY.SetColumn(0, new Vector4(1.0f, 0.0f, 0.0f, 0.0f));
       rotXY.SetColumn(1, new Vector4(0.0f, 1.0f, 0.0f, 0.0f));
-      rotXY.SetColumn(2, new Vector4(0.0f, 0.0f, Mathf.Cos(rotateW.x), Mathf.Sin(rotateW.z)));
+      rotXY.SetColumn(2, new Vector4(0.0f, 0.0f, Mathf.Cos(rotateW.z), Mathf.Sin(rotateW.z)));
       rotXY.SetColumn(3, new Vector4(0.0f, 0.0f, -Mathf.Sin(rotateW.z), Mathf.Cos(rotateW.z)));
       
       Matrix4x4 rotYZ = new Matrix4x4();
@@ -33,20 +33,21 @@ namespace FourDimension.Core
       rotXZ.SetColumn(2, new Vector4(0.0f, 0.0f, 1.0f, 0.0f));
       rotXZ.SetColumn(3, new Vector4(0.0f, -Mathf.Sin(rotateW.y), 0.0f, Mathf.Cos(rotateW.y)));
 
-      Matrix4x4 m = rotXZ * rotYZ * rotXY;
-      m[3, 3] = scaleW;
-      m[2, 3] = positionW;
+      Matrix4x4 scale = Matrix4x4.identity;
+      scale[3, 3] = scaleW;
+      Matrix4x4 m = rotXZ * rotYZ * rotXY * scale;
       return m;
     }
 
     void Start()
     {
-      material = GetComponent<MeshRenderer>().material; 
+      material = GetComponent<Renderer>().sharedMaterial; 
     }
 
     void Update()
     {
       material.SetMatrix("_FourDMatrix", MakeScaleRotationMatrix());
+      material.SetFloat("_PositionW", positionW);
     }
   }
 }
