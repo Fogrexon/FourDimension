@@ -51,17 +51,17 @@
             sampler2D _MainTex;
             float4 _MainTex_ST;
             uniform float4x4 _FourDMatrix;
-            uniform float _PositionW;
+            uniform float4 _Position;
 
             v2g vert (appdata v)
             {
                 v2g o;
                 o.vertex = mul(unity_ObjectToWorld, v.vertex);
                 o.color = v.color;
-                o.pos0 = mul(_FourDMatrix, v.pos0) + float4(0.0, 0.0, 0.0, _PositionW);
-                o.pos1 = mul(_FourDMatrix, v.pos1) + float4(0.0, 0.0, 0.0, _PositionW);
-                o.pos2 = mul(_FourDMatrix, v.pos2) + float4(0.0, 0.0, 0.0, _PositionW);
-                o.pos3 = mul(_FourDMatrix, v.pos3) + float4(0.0, 0.0, 0.0, _PositionW);
+                o.pos0 = mul(_FourDMatrix, v.pos0) + _Position;
+                o.pos1 = mul(_FourDMatrix, v.pos1) + _Position;
+                o.pos2 = mul(_FourDMatrix, v.pos2) + _Position;
+                o.pos3 = mul(_FourDMatrix, v.pos3) + _Position;
                 return o;
             }
 
@@ -128,27 +128,27 @@
                 }
 
                 if(index < 4) {
-                    float3 norm = UnityObjectToWorldNormal(normalize(cross(t[1].position.xyz - t[0].position.xyz, t[2].position.xyz - t[0].position.xyz)));
+                    float3 norm = normalize(cross(t[1].position.xyz - t[0].position.xyz, t[2].position.xyz - t[0].position.xyz));
                     t[0].normal = norm;
                     t[1].normal = norm;
                     t[2].normal = norm;
-                    t[0].position = UnityObjectToClipPos(t[0].position);
-                    t[1].position = UnityObjectToClipPos(t[1].position);
-                    t[2].position = UnityObjectToClipPos(t[2].position);
+                    t[0].position = mul(UNITY_MATRIX_VP, t[0].position);
+                    t[1].position = mul(UNITY_MATRIX_VP, t[1].position);
+                    t[2].position = mul(UNITY_MATRIX_VP, t[2].position);
                     outStream.Append(t[0]);
                     outStream.Append(t[1]);
                     outStream.Append(t[2]);
                     outStream.RestartStrip();
                 } else {
-                    float3 norm = UnityObjectToWorldNormal(normalize(cross(t[1].position.xyz - t[0].position.xyz, t[2].position.xyz - t[0].position.xyz)));
+                    float3 norm = normalize(cross(t[1].position.xyz - t[0].position.xyz, t[2].position.xyz - t[0].position.xyz));
                     t[0].normal = norm;
                     t[1].normal = norm;
                     t[2].normal = norm;
                     t[3].normal = norm;
-                    t[0].position = UnityObjectToClipPos(t[0].position);
-                    t[1].position = UnityObjectToClipPos(t[1].position);
-                    t[2].position = UnityObjectToClipPos(t[2].position);
-                    t[3].position = UnityObjectToClipPos(t[3].position);
+                    t[0].position = mul(UNITY_MATRIX_VP, t[0].position);
+                    t[1].position = mul(UNITY_MATRIX_VP, t[1].position);
+                    t[2].position = mul(UNITY_MATRIX_VP, t[2].position);
+                    t[3].position = mul(UNITY_MATRIX_VP, t[3].position);
                     outStream.Append(t[0]);
                     outStream.Append(t[1]);
                     outStream.Append(t[2]);
