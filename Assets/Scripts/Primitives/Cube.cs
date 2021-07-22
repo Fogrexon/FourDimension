@@ -85,7 +85,7 @@ namespace FourDimension.Primitives
       Color colTemp = new Color();
       for (int i = 0; i < baseCubeNum / 4 * 8; i++)
       {
-        colTemp = new Color(Random.value, Random.value, Random.value);
+        if(i % (baseCubeNum / 4) == 0) colTemp = new Color(Random.value, Random.value, Random.value);
         colors.Add(colTemp);
       }
     }
