@@ -109,5 +109,15 @@ namespace FourDimension.Core
         material.SetVector("_Position", propagatedPosition);
       }
     }
+
+    [DrawGizmo(GizmoType.Selected | GizmoType.NonSelected)]
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawCube(
+          new Vector3(position.x, position.y, position.z),
+          new Vector3(1, 1, 1)
+        );
+    }
   }
 }
