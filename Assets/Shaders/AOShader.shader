@@ -1,4 +1,4 @@
-﻿Shader "4DEngine/FourDimensionObject"
+Shader "Game/Custom/FourDimensionObjectAO"
 {
     Properties
     {
@@ -193,16 +193,23 @@
             {
                 float4 vertex : POSITION;
                 float4 color: COLOR;
+                // world position
                 float4 pos0 : TEXCOORD0;
                 float4 pos1 : TEXCOORD1;
                 float4 pos2 : TEXCOORD2;
                 float4 pos3 : TEXCOORD3;
+                // local position
+                float4 pos0_o : TEXCOORD4;
+                float4 pos1_o : TEXCOORD5;
+                float4 pos2_o : TEXCOORD6;
+                float4 pos3_o : TEXCOORD7;
             };
 
             struct g2f
             {
                 float4 position: SV_POSITION;
                 float3 normal: TEXCOORD0;
+                float4 edge: TEXCOORD1;
                 float4 color: COLOR;
             };
 
@@ -220,6 +227,10 @@
                 o.pos1 = mul(_FourDMatrix, v.pos1) + _Position;
                 o.pos2 = mul(_FourDMatrix, v.pos2) + _Position;
                 o.pos3 = mul(_FourDMatrix, v.pos3) + _Position;
+                o.pos0_o = v.pos0;
+                o.pos1_o = v.pos1;
+                o.pos2_o = v.pos2;
+                o.pos3_o = v.pos3;
                 return o;
             }
 
@@ -230,58 +241,76 @@
                 v2g v = input[0];
                 g2f t[4] = {
                     {
-                        float4(0.0, 0.0, 0.0, 1.0), float3(1.0, 0.0, 0.0), v.color
+                        float4(0.0, 0.0, 0.0, 1.0), float3(1.0, 0.0, 0.0), float4(0.0, 0.0, 0.0, 0.0), v.color
                     },
                     {
-                        float4(0.0, 0.0, 0.0, 1.0), float3(1.0, 0.0, 0.0), v.color
+                        float4(0.0, 0.0, 0.0, 1.0), float3(1.0, 0.0, 0.0), float4(0.0, 0.0, 0.0, 0.0), v.color
                     },
                     {
-                        float4(0.0, 0.0, 0.0, 1.0), float3(1.0, 0.0, 0.0), v.color
+                        float4(0.0, 0.0, 0.0, 1.0), float3(1.0, 0.0, 0.0), float4(0.0, 0.0, 0.0, 0.0), v.color
                     },
                     {
-                        float4(0.0, 0.0, 0.0, 1.0), float3(1.0, 0.0, 0.0), v.color
+                        float4(0.0, 0.0, 0.0, 1.0), float3(1.0, 0.0, 0.0), float4(0.0, 0.0, 0.0, 0.0), v.color
                     }
                 };
 
                 if(v.pos0.w * v.pos1.w <= 0 && index < 4)
                 {
                     float3 pos = lerp(v.pos0.xyz, v.pos1.xyz, abs(v.pos0.w) / (abs(v.pos0.w) + abs(v.pos1.w)));
+                    float4 pos_o = lerp(v.pos0_o, v.pos1_o, abs(v.pos0.w) / (abs(v.pos0.w) + abs(v.pos1.w)));
                     t[index].position = float4(pos.x, pos.y, pos.z, 1.0);
+                    t[index].edge = pos_o;
+
                     index++;
                 }
 
                 if(v.pos0.w * v.pos2.w <= 0 && index < 4)
                 {
                     float3 pos = lerp(v.pos0.xyz, v.pos2.xyz, abs(v.pos0.w) / (abs(v.pos0.w) + abs(v.pos2.w)));
+                    float4 pos_o = lerp(v.pos0_o, v.pos2_o, abs(v.pos0.w) / (abs(v.pos0.w) + abs(v.pos2.w)));
                     t[index].position = float4(pos.x, pos.y, pos.z, 1.0);
+                    t[index].edge = pos_o;
+
                     index++;
                 }
 
                 if(v.pos0.w * v.pos3.w <= 0 && index < 4)
                 {
                     float3 pos = lerp(v.pos0.xyz, v.pos3.xyz, abs(v.pos0.w) / (abs(v.pos0.w) + abs(v.pos3.w)));
+                    float4 pos_o = lerp(v.pos0_o, v.pos3_o, abs(v.pos0.w) / (abs(v.pos0.w) + abs(v.pos3.w)));
                     t[index].position = float4(pos.x, pos.y, pos.z, 1.0);
+                    t[index].edge = pos_o;
+
                     index++;
                 }
 
                 if(v.pos1.w * v.pos2.w <= 0 && index < 4)
                 {
                     float3 pos = lerp(v.pos1.xyz, v.pos2.xyz, abs(v.pos1.w) / (abs(v.pos1.w) + abs(v.pos2.w)));
+                    float4 pos_o = lerp(v.pos1_o, v.pos2_o, abs(v.pos1.w) / (abs(v.pos1.w) + abs(v.pos2.w)));
                     t[index].position = float4(pos.x, pos.y, pos.z, 1.0);
+                    t[index].edge = pos_o;
+
                     index++;
                 }
 
                 if(v.pos1.w * v.pos3.w <= 0 && index < 4)
                 {
                     float3 pos = lerp(v.pos1.xyz, v.pos3.xyz, abs(v.pos1.w) / (abs(v.pos1.w) + abs(v.pos3.w)));
+                    float4 pos_o = lerp(v.pos1_o, v.pos3_o, abs(v.pos1.w) / (abs(v.pos1.w) + abs(v.pos3.w)));
                     t[index].position = float4(pos.x, pos.y, pos.z, 1.0);
+                    t[index].edge = pos_o;
+
                     index++;
                 }
 
                 if(v.pos2.w * v.pos3.w <= 0 && index < 4)
                 {
                     float3 pos = lerp(v.pos2.xyz, v.pos3.xyz, abs(v.pos2.w) / (abs(v.pos2.w) + abs(v.pos3.w)));
+                    float4 pos_o = lerp(v.pos2_o, v.pos3_o, abs(v.pos2.w) / (abs(v.pos2.w) + abs(v.pos3.w)));
                     t[index].position = float4(pos.x, pos.y, pos.z, 1.0);
+                    t[index].edge = pos_o;
+
                     index++;
                 }
 
@@ -320,7 +349,15 @@
 
             fixed4 frag (g2f i) : COLOR
             {
-                fixed4 col = i.color;// * abs(dot(_WorldSpaceLightPos0.xyz, i.normal));
+                float edgeX = lerp(abs(i.edge.x), 0.0, step(0.5, abs(i.edge.x) + 0.00001));
+                float edgeY = lerp(abs(i.edge.y), 0.0, step(0.5, abs(i.edge.y) + 0.00001));
+                float edgeZ = lerp(abs(i.edge.z), 0.0, step(0.5, abs(i.edge.z) + 0.00001));
+                float edgeW = lerp(abs(i.edge.w), 0.0, step(0.5, abs(i.edge.w) + 0.00001));
+                fixed4 col = lerp(
+                    float4(1.5, 1.5, 1.5, 1.0),
+                    float4(0.0, 0.0, 0.0, 1.0),
+                    step(max(max(max(edgeX, edgeY), edgeZ), edgeW), 0.49)
+                );
                 return col;
             }
             ENDCG
