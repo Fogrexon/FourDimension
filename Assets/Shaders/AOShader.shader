@@ -353,10 +353,12 @@ Shader "Game/Custom/FourDimensionObjectAO"
                 float edgeY = lerp(abs(i.edge.y), 0.0, step(0.5, abs(i.edge.y) + 0.00001));
                 float edgeZ = lerp(abs(i.edge.z), 0.0, step(0.5, abs(i.edge.z) + 0.00001));
                 float edgeW = lerp(abs(i.edge.w), 0.0, step(0.5, abs(i.edge.w) + 0.00001));
+                float ao = sqrt((edgeX * edgeX + edgeY * edgeY + edgeZ * edgeZ) / 3.0);
+                float edge = max(max(max(edgeX, edgeY), edgeZ), edgeW);
                 fixed4 col = lerp(
-                    float4(1.5, 1.5, 1.5, 1.0),
-                    float4(0.0, 0.0, 0.0, 1.0),
-                    step(max(max(max(edgeX, edgeY), edgeZ), edgeW), 0.49)
+                    float4(1.1, 1.1, 1.1, 1.0),
+                    lerp(float4(0.0, 0.0, 0.0, 1.0), float4(0.15, 0.15, 0.15, 1.0), ao * 2.0),
+                    step(edge, 0.49)
                 );
                 return col;
             }
