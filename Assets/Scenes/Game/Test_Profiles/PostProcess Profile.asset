@@ -54,11 +54,11 @@ MonoBehaviour:
     overrideState: 1
     value: 1
   shutterAngle:
-    overrideState: 0
-    value: 270
+    overrideState: 1
+    value: 249
   sampleCount:
-    overrideState: 0
-    value: 10
+    overrideState: 1
+    value: 12
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -95,7 +95,7 @@ MonoBehaviour:
     value: 1
   intensity:
     overrideState: 1
-    value: 0.63
+    value: 4.23
   threshold:
     overrideState: 0
     value: 1
@@ -173,8 +173,8 @@ MonoBehaviour:
     value: {fileID: 0}
     defaultState: 1
   intensity:
-    overrideState: 0
-    value: 0
+    overrideState: 1
+    value: 0.701
   fastMode:
-    overrideState: 0
+    overrideState: 1
     value: 0
