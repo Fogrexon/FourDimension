@@ -2,6 +2,7 @@ Shader "Game/Title/FadeShader"
 {
     Properties
     {
+        _MainTex ("MainTex", 2D) = "black"{}
         _Alpha ("Alpha", Range(0, 1)) = 1.0
     }
     SubShader
@@ -33,6 +34,7 @@ Shader "Game/Title/FadeShader"
                 float4 vertex : SV_POSITION;
             };
 
+            sampler2D _MainTex;
             float _Alpha;
 
             v2f vert (appdata v)
@@ -47,7 +49,8 @@ Shader "Game/Title/FadeShader"
             fixed4 frag (v2f i) : SV_Target
             {
                 // sample the texture
-                fixed4 col = float4(0.0, 0.0, 0.0, _Alpha);
+                fixed4 col = tex2D(_MainTex, i.uv);
+                col.a = _Alpha;
                 // apply fog
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
