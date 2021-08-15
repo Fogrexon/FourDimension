@@ -34,7 +34,7 @@ namespace FourDimension.Core
 
     Matrix4x4 MakeScaleRotationMatrix()
     {
-      rotation = Quaternion.Euler(rotateXYZ.x, rotateXYZ.y, rotateXYZ.z);
+      rotation = Quaternion.Euler(rotateXYZ.x * Mathf.Rad2Deg, rotateXYZ.y * Mathf.Rad2Deg, rotateXYZ.z * Mathf.Rad2Deg);
 
       // normal 3d rotation matrix
       Matrix4x4 rotXYZ = Matrix4x4.Rotate(rotation);
@@ -69,7 +69,7 @@ namespace FourDimension.Core
       scaleMat[3, 3] = scale.w;
 
       // Y * X * Z * WY * WX * WZ * scale
-     return rotXZ * rotYZ * rotXY * rotXYZ * rotXZ * rotYZ * rotXY * scaleMat;
+     return rotXYZ * rotXZ * rotYZ * rotXY * scaleMat;
     }
 
     void SetTransform() {
