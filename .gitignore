@@ -72,3 +72,8 @@ crashlytics-build.properties
 
 # Fonts
 *.ttf
+
+# Sounds
+*.mp3
+*.wav
+*.ogg
