@@ -17,6 +17,7 @@ namespace Game.Main {
         }
 
         private void Update() {
+            if (!GameJudge.isPlaying) return;
             if (Input.GetKey(KeyCode.W)) {
                 fdTransform.rotateXYZ.x = (fdTransform.rotateXYZ.x + rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
             }
