@@ -77,3 +77,6 @@ crashlytics-build.properties
 *.mp3
 *.wav
 *.ogg
+
+# Plugins
+Assets/TextureHaven/*
