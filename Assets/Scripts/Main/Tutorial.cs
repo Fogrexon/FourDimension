@@ -19,13 +19,16 @@ namespace Game.Main {
         private void Update()
         {
             if (flag && Input.anyKey) {
+                // game end
                 flag = false;
                 DOTween.To(
                     () => 1,
                     v => fadeTutorial.SetFloat("_Alpha", v),
                     0f,
                     1f
-                );
+                ).OnComplete(() => {
+                    GameJudge.isPlaying = true;
+                });
             }
         }
     }

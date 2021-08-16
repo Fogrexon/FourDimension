@@ -3,6 +3,7 @@ Shader "Game/Custom/FourDimensionObjectAO"
     Properties
     {
         _MainTex ("Texture", 2D) = "white" {}
+        _Pulse ("Pulse", Float) = 0
     }
     SubShader
     {
@@ -217,6 +218,7 @@ Shader "Game/Custom/FourDimensionObjectAO"
             float4 _MainTex_ST;
             uniform float4x4 _FourDMatrix;
             uniform float4 _Position;
+            float _Pulse;
 
             v2g vert (appdata v)
             {
@@ -355,8 +357,10 @@ Shader "Game/Custom/FourDimensionObjectAO"
                 float edgeW = lerp(abs(i.edge.w), 0.0, step(0.5, abs(i.edge.w) + 0.00001));
                 float ao = sqrt((edgeX * edgeX + edgeY * edgeY + edgeZ * edgeZ) / 3.0);
                 float edge = max(max(max(edgeX, edgeY), edgeZ), edgeW);
+
+                float white = 2.0 * exp(- _Pulse * 2.0) * (cos(_Time.y * 3.0) * 0.2 * max(0.0, min(1.0, 1.3 - _Pulse * 3.0)) + 0.8);
                 fixed4 col = lerp(
-                    float4(1.1, 1.1, 1.1, 1.0),
+                    float4(white, white, white, 1.0),
                     lerp(float4(0.0, 0.0, 0.0, 1.0), float4(0.15, 0.15, 0.15, 1.0), ao * 2.0),
                     step(edge, 0.49)
                 );

@@ -12,14 +12,19 @@ namespace Game.Main {
         private FourDimensionTransform fdTransformTarget;
         private FourDimensionTransform fdTransformPlayer;
 
+        private Material materialTarget;
+        private Material materialPlayer;
+
         private Material gameEnd;
 
-        public static bool isPlaying = true;
+        public static bool isPlaying = false;
+        public static bool isEndgame = false;
         public static float waitTime;
+
+        private float startTime = 0f;
 
         void Start()
         {
-            GameJudge.isPlaying = true;
             fdTransformTarget = GameObject.Find("Example4DCube").GetComponent<FourDimensionTransform>();
             fdTransformTarget.rotateXYZ = new Vector3(
                 Random.Range(0f, Mathf.PI * 2f),
@@ -32,6 +37,12 @@ namespace Game.Main {
                 Random.Range(0f, Mathf.PI * 2f)
             );
             fdTransformPlayer = GameObject.Find("4DCube").GetComponent<FourDimensionTransform>();
+
+            materialTarget = fdTransformTarget.gameObject.GetComponent<Renderer>().material;
+            materialPlayer = fdTransformPlayer.gameObject.GetComponent<Renderer>().material;
+            materialTarget.SetFloat("_Pulse", 4f);
+            materialPlayer.SetFloat("_Pulse", 4f);
+
             gameEnd = GameObject.Find("Clear").GetComponent<RawImage>().material;
             gameEnd.SetFloat("_Alpha", 0f);
         }
@@ -39,18 +50,41 @@ namespace Game.Main {
         void Update()
         {
             if (GameJudge.isPlaying) {
-                Vector3 baseVal = fdTransformPlayer.rotateXYZ - fdTransformTarget.rotateXYZ + new Vector3(Mathf.PI * 2f, Mathf.PI * 2f, Mathf.PI * 2f);
-                Vector3 baseValW = fdTransformPlayer.rotateW - fdTransformTarget.rotateW + new Vector3(Mathf.PI * 2f, Mathf.PI * 2f, Mathf.PI * 2f);
-                float diff =
-                    Vector3.Dot(new Vector3(CalcDiff(baseVal.x), CalcDiff(baseVal.y), CalcDiff(baseVal.z)), new Vector3(1f, 1f, 1f)) +
-                    Vector3.Dot(new Vector3(CalcDiff(baseValW.x), CalcDiff(baseValW.y), CalcDiff(baseValW.z)), new Vector3(1f, 1f, 1f));
+                Vector4 axisX = new Vector4(1f, 0f, 0f, 0f);
+                Vector4 axisY = new Vector4(0f, 1f, 0f, 0f);
+                Vector4 axisZ = new Vector4(0f, 0f, 1f, 0f);
+                Vector4 axisW = new Vector4(0f, 0f, 0f, 1f);
 
-                if (diff < Mathf.PI * 0.02f) {
+                Matrix4x4 targetRotation = fdTransformTarget.GetWorldRotation();
+                Matrix4x4 playerRotation = fdTransformPlayer.GetWorldRotation();
+
+                Vector4 targetX = targetRotation * axisX;
+                Vector4 targetY = targetRotation * axisY;
+                Vector4 targetZ = targetRotation * axisZ;
+                Vector4 targetW = targetRotation * axisW;
+
+                Vector4 playerX = playerRotation * axisX;
+                Vector4 playerY = playerRotation * axisY;
+                Vector4 playerZ = playerRotation * axisZ;
+                Vector4 playerW = playerRotation * axisW;
+
+                // axis diff
+                float diff = 
+                    MinDot(playerX, targetX, targetY, targetZ, targetW) +
+                    MinDot(playerY, targetX, targetY, targetZ, targetW) +
+                    MinDot(playerZ, targetX, targetY, targetZ, targetW) +
+                    MinDot(playerW, targetX, targetY, targetZ, targetW);
+                
+                materialTarget.SetFloat("_Pulse", diff);
+                materialPlayer.SetFloat("_Pulse", diff);
+                
+                if (diff < 0.07f) {
                     GameJudge.isPlaying = false;
+                    GameJudge.isEndgame = true;
                     waitTime = 1f;
                     GameEnd();
                 }
-            } else {
+            } else if (GameJudge.isEndgame) {
                 waitTime -= Time.deltaTime;
                 if (waitTime < 0 && Input.anyKey) {
                     SceneManager.LoadScene("Title");
@@ -58,9 +92,15 @@ namespace Game.Main {
             }
         }
 
+        float MinDot(Vector4 playerAxis, Vector4 targetX, Vector4 targetY, Vector4 targetZ, Vector4 targetW) {
+            return 1f - Mathf.Max(
+                Mathf.Max(Mathf.Abs(Vector4.Dot(playerAxis, targetX)), Mathf.Abs(Vector4.Dot(playerAxis, targetY))),
+                Mathf.Max(Mathf.Abs(Vector4.Dot(playerAxis, targetZ)), Mathf.Abs(Vector4.Dot(playerAxis, targetW)))
+            );
+        }
+
         float CalcDiff(float a) {
             float v = a % (Mathf.PI * 0.5f);
-            Debug.Log(Mathf.Min(Mathf.PI * 0.5f - v, v));
             return Mathf.Min(Mathf.PI * 0.5f - v, v);
         }
 

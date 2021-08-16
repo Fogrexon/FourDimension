@@ -19,41 +19,41 @@ namespace Game.Main {
         private void Update() {
             if (!GameJudge.isPlaying) return;
             if (Input.GetKey(KeyCode.W)) {
-                fdTransform.rotateXYZ.x = (fdTransform.rotateXYZ.x + rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
+                fdTransform.rotateXYZ.x = (fdTransform.rotateXYZ.x + rotationDelta * Time.deltaTime + Mathf.PI * 2f) % (Mathf.PI * 2f);
             }
             if (Input.GetKey(KeyCode.S)) {
-                fdTransform.rotateXYZ.x = (fdTransform.rotateXYZ.x - rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
+                fdTransform.rotateXYZ.x = (fdTransform.rotateXYZ.x - rotationDelta * Time.deltaTime + Mathf.PI * 2f) % (Mathf.PI * 2f);
             }
             if (Input.GetKey(KeyCode.E)) {
-                fdTransform.rotateXYZ.y = (fdTransform.rotateXYZ.y + rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
+                fdTransform.rotateXYZ.y = (fdTransform.rotateXYZ.y + rotationDelta * Time.deltaTime + Mathf.PI * 2f) % (Mathf.PI * 2f);
             }
             if (Input.GetKey(KeyCode.D)) {
-                fdTransform.rotateXYZ.y = (fdTransform.rotateXYZ.y - rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
+                fdTransform.rotateXYZ.y = (fdTransform.rotateXYZ.y - rotationDelta * Time.deltaTime + Mathf.PI * 2f) % (Mathf.PI * 2f);
             }
             if (Input.GetKey(KeyCode.R)) {
-                fdTransform.rotateXYZ.z = (fdTransform.rotateXYZ.z + rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
+                fdTransform.rotateXYZ.z = (fdTransform.rotateXYZ.z + rotationDelta * Time.deltaTime + Mathf.PI * 2f) % (Mathf.PI * 2f);
             }
             if (Input.GetKey(KeyCode.F)) {
-                fdTransform.rotateXYZ.z = (fdTransform.rotateXYZ.z - rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
+                fdTransform.rotateXYZ.z = (fdTransform.rotateXYZ.z - rotationDelta * Time.deltaTime + Mathf.PI * 2f) % (Mathf.PI * 2f);
             }
             
             if (Input.GetKey(KeyCode.U)) {
-                fdTransform.rotateW.x = (fdTransform.rotateW.x + rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
+                fdTransform.rotateW.x = (fdTransform.rotateW.x + rotationDelta * Time.deltaTime + Mathf.PI * 2f) % (Mathf.PI * 2f);
             }
             if (Input.GetKey(KeyCode.J)) {
-                fdTransform.rotateW.x = (fdTransform.rotateW.x - rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
+                fdTransform.rotateW.x = (fdTransform.rotateW.x - rotationDelta * Time.deltaTime + Mathf.PI * 2f) % (Mathf.PI * 2f);
             }
             if (Input.GetKey(KeyCode.I)) {
-                fdTransform.rotateW.y = (fdTransform.rotateW.y + rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
+                fdTransform.rotateW.y = (fdTransform.rotateW.y + rotationDelta * Time.deltaTime + Mathf.PI * 2f) % (Mathf.PI * 2f);
             }
             if (Input.GetKey(KeyCode.K)) {
-                fdTransform.rotateW.y = (fdTransform.rotateW.y - rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
+                fdTransform.rotateW.y = (fdTransform.rotateW.y - rotationDelta * Time.deltaTime + Mathf.PI * 2f) % (Mathf.PI * 2f);
             }
             if (Input.GetKey(KeyCode.O)) {
-                fdTransform.rotateW.z = (fdTransform.rotateW.z + rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
+                fdTransform.rotateW.z = (fdTransform.rotateW.z + rotationDelta * Time.deltaTime + Mathf.PI * 2f) % (Mathf.PI * 2f);
             }
             if (Input.GetKey(KeyCode.L)) {
-                fdTransform.rotateW.z = (fdTransform.rotateW.z - rotationDelta * Time.deltaTime) % (Mathf.PI * 2f);
+                fdTransform.rotateW.z = (fdTransform.rotateW.z - rotationDelta * Time.deltaTime + Mathf.PI * 2f) % (Mathf.PI * 2f);
             }
 
             if (Input.GetKey(KeyCode.Space)) {
