@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
-
+#endif
 
 namespace FourDimension.Core
 {
@@ -82,7 +83,11 @@ namespace FourDimension.Core
     void Start()
     {
       hasMaterial = gameObject.HasComponent<Renderer>();
+      #if UNITY_EDITOR
       if (EditorApplication.isPlaying && hasMaterial) material = GetComponent<Renderer>().material;
+      #else
+      if (hasMaterial) material = GetComponent<Renderer>().material;
+      #endif
 
       // set parent transform
       hasParentTransform = transform.parent != null && transform.parent.gameObject.HasComponent<FourDimensionTransform>();
@@ -104,12 +109,20 @@ namespace FourDimension.Core
         propagatedPosition = position;
       }
 
+      #if UNITY_EDITOR
       if(EditorApplication.isPlaying && hasMaterial) {
         material.SetMatrix("_FourDMatrix", propagatedTransformMatrix);
         material.SetVector("_Position", propagatedPosition);
       }
+      #else
+      if(hasMaterial) {
+        material.SetMatrix("_FourDMatrix", propagatedTransformMatrix);
+        material.SetVector("_Position", propagatedPosition);
+      }
+      #endif
     }
 
+    #if UNITY_EDITOR
     [DrawGizmo(GizmoType.Selected | GizmoType.NonSelected)]
     private void OnDrawGizmos()
     {
@@ -119,5 +132,6 @@ namespace FourDimension.Core
           new Vector3(1, 1, 1)
         );
     }
+    #endif
   }
 }
