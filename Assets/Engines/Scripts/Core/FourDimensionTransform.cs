@@ -18,9 +18,12 @@ namespace FourDimension.Core
     private Quaternion rotation = Quaternion.identity;
     #endregion
 
-    #region store_calclated
-    public Matrix4x4 propagatedTransformMatrix = new Matrix4x4();
-    private Vector4 propagatedPosition = Vector4.zero;
+    #region matrixes
+    private Matrix4x4 localRotationMatrix = new Matrix4x4();
+    private Matrix4x4 localScaleMatrix = new Matrix4x4();
+    private Matrix4x4 localRotationScaleMatrix = new Matrix4x4();
+    private Matrix4x4 worldRotationScaleMatrix = new Matrix4x4();
+    private Vector4 worldPosition = Vector4.zero;
     #endregion
 
     float epsilon = 0.000001f;
@@ -33,7 +36,7 @@ namespace FourDimension.Core
     private bool hasParentTransform = false;
     #endregion
 
-    Matrix4x4 MakeScaleRotationMatrix()
+    void MakeScaleRotationMatrix()
     {
       rotation = Quaternion.Euler(rotateXYZ.x * Mathf.Rad2Deg, rotateXYZ.y * Mathf.Rad2Deg, rotateXYZ.z * Mathf.Rad2Deg);
 
@@ -70,7 +73,9 @@ namespace FourDimension.Core
       scaleMat[3, 3] = scale.w;
 
       // Y * X * Z * WY * WX * WZ * scale
-     return rotXYZ * rotXZ * rotYZ * rotXY * scaleMat;
+      localRotationMatrix = rotXYZ * rotXZ * rotYZ * rotXY;
+      localScaleMatrix = scaleMat;
+      localRotationScaleMatrix = localRotationMatrix * localScaleMatrix;
     }
 
     void SetTransform() {
@@ -78,6 +83,36 @@ namespace FourDimension.Core
       transform.rotation = rotation;
       transform.localPosition = new Vector3(position.x, position.y, position.z);
       transform.localScale = new Vector3(scale.x, scale.y, scale.z);
+    }
+
+    public Matrix4x4 GetLocalRotation() {
+      return localRotationMatrix;
+    }
+
+    public Matrix4x4 GetLocalRotationScale() {
+      return localRotationScaleMatrix;
+    }
+
+    public Vector4 GetLocalPosition() {
+      return position;
+    }
+
+    public Matrix4x4 GetWorldRotation() {
+      if (hasParentTransform) return localRotationMatrix * parentTransform.GetWorldRotation();
+      return localRotationMatrix;
+    }
+
+    public Matrix4x4 GetWorldScale() {
+      if (hasParentTransform) return localScaleMatrix * parentTransform.GetWorldScale();
+      return localScaleMatrix;
+    }
+
+    public Matrix4x4 GetWorldRotationScale() {
+      return worldRotationScaleMatrix;
+    }
+
+    public Vector4 GetWorldPosition() {
+      return worldPosition;
     }
 
     void Start()
@@ -98,26 +133,26 @@ namespace FourDimension.Core
 
     void Update()
     {
-      Matrix4x4 transformMatrix = MakeScaleRotationMatrix();
+      MakeScaleRotationMatrix();
       SetTransform();
 
       if (hasParentTransform) {
-        propagatedTransformMatrix = transformMatrix * parentTransform.propagatedTransformMatrix;
-        propagatedPosition = parentTransform.propagatedTransformMatrix * position + parentTransform.propagatedPosition;
+        worldRotationScaleMatrix = localRotationScaleMatrix * parentTransform.GetWorldRotationScale();
+        worldPosition = parentTransform.GetWorldRotationScale() * position + parentTransform.GetWorldPosition();
       } else {
-        propagatedTransformMatrix = transformMatrix;
-        propagatedPosition = position;
+        worldRotationScaleMatrix = localRotationScaleMatrix;
+        worldPosition = position;
       }
 
       #if UNITY_EDITOR
       if(EditorApplication.isPlaying && hasMaterial) {
-        material.SetMatrix("_FourDMatrix", propagatedTransformMatrix);
-        material.SetVector("_Position", propagatedPosition);
+        material.SetMatrix("_FourDMatrix", worldRotationScaleMatrix);
+        material.SetVector("_Position", worldPosition);
       }
       #else
       if(hasMaterial) {
-        material.SetMatrix("_FourDMatrix", propagatedTransformMatrix);
-        material.SetVector("_Position", propagatedPosition);
+        material.SetMatrix("_FourDMatrix", worldRotationScaleMatrix);
+        material.SetVector("_Position", worldPosition);
       }
       #endif
     }
