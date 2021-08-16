@@ -93,19 +93,25 @@ namespace FourDimension.Core
       return localRotationScaleMatrix;
     }
 
-    public Matrix4x4 GetLocalRotation() {
-      return localRotationMatrix;
+    public Vector4 GetLocalPosition() {
+      return position;
     }
 
     public Matrix4x4 GetWorldRotation() {
-      return worldRotationMatrix;
+      if (hasParentTransform) return localRotationMatrix * parentTransform.GetWorldRotation();
+      return localRotationMatrix;
+    }
+
+    public Matrix4x4 GetWorldScale() {
+      if (hasParentTransform) return localScaleMatrix * parentTransform.GetWorldScale();
+      return localScaleMatrix;
     }
 
     public Matrix4x4 GetWorldRotationScale() {
       return worldRotationScaleMatrix;
     }
 
-    public Matrix4x4 GetWorldPosition() {
+    public Vector4 GetWorldPosition() {
       return worldPosition;
     }
 
